@@ -7,7 +7,7 @@ import tensorflow as tf
 import util
 
 # Directory of bert, cloned from github.com/google-research/bert
-sys.path.append("/path/to/bert")
+sys.path.append("./bert")
 import tokenization
 
 SEMANTIC_DICT = {
