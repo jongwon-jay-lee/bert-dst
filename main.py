@@ -15,7 +15,7 @@ flags = tf.flags
 FLAGS = flags.FLAGS
 
 # Directory of bert, cloned from github.com/google-research/bert
-sys.path.append("/path/to/bert")
+sys.path.append("./bert")
 
 import modeling
 import optimization
