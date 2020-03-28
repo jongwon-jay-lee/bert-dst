@@ -221,6 +221,6 @@ modules.xml
 .idea/sonarlint
 
 # BERT Model file
-./uncased_L-12_H-768_A-12/**
+/bert_model/**
 
 # End of https://www.gitignore.io/api/pycharm+all
