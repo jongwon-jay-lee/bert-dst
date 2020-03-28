@@ -5,6 +5,7 @@ import sys
 import tensorflow as tf
 
 import util
+from  pprint import pprint
 
 # Directory of bert, cloned from github.com/google-research/bert
 sys.path.append("./bert_src")
@@ -137,32 +138,37 @@ def create_examples(dialog_filename, slot_list, set_type, use_asr_hyp=0,
     examples = []
     with open(dialog_filename) as f:
         dst_set = json.load(f)
-    for dial in dst_set:
+    for i, dial in enumerate(dst_set):
+        if i < 3:
+            print('[DIAL][{}]'.format(i))
+            pprint(dial)
         for turn in dial['dialogue']:
             guid = '%s-%s-%s' % (set_type,
                                  str(dial['dialogue_idx']),
                                  str(turn['turn_idx']))
-
+            # get sys_utt tokenized
             sys_utt_tok = tokenize(turn['system_transcript'])
 
+            # get usr_utt
             usr_utt_tok_list = []
-            if use_asr_hyp == 0:
+            if use_asr_hyp == 0:    # not use asr hypothesis, instead transcript
                 usr_utt_tok_list.append(tokenize(turn['transcript']))
             else:
                 for asr_hyp, _ in turn['asr'][:use_asr_hyp]:
                     usr_utt_tok_list.append(tokenize(asr_hyp))
 
+            # get slot-value pair (i.e "price range"-"moderate")
             turn_label = [[FIX.get(s.strip(), s.strip()), FIX.get(v.strip(), v.strip())] for s, v in turn['turn_label']]
 
             for usr_utt_tok in usr_utt_tok_list:
                 sys_utt_tok_label_dict = {}
                 usr_utt_tok_label_dict = {}
-                class_type_dict = {}
-                for slot in slot_list:
+                class_type_dict = {}            # class_types = ['none', 'dontcare', 'copy_value', 'unpointable']
+                for slot in slot_list:          # slot_list = ['area', 'food', 'price range']
                     label = 'none'
                     for [s, v] in turn_label:
-                        if s == slot:
-                            label = v
+                        if s == slot:           # s: area
+                            label = v           # v: center
                             break
                     sys_utt_tok_label, usr_utt_tok_label, class_type = get_turn_label(
                         label, sys_utt_tok, usr_utt_tok,
@@ -175,6 +181,15 @@ def create_examples(dialog_filename, slot_list, set_type, use_asr_hyp=0,
                             'Unpointable: guid=%s, slot=%s, label=%s, usr_utt=%s, sys_utt=%s' % (
                                 guid, slot, label, usr_utt_tok, sys_utt_tok))
                 if 'unpointable' not in class_type_dict.values() or not exclude_unpointable:
+                    """
+                    if i < 10:
+                        print("[guid][{}][{}]".format(i, guid))
+                        print("[sys_utt_tok][{}][{}]".format(i, sys_utt_tok))
+                        print("[usr_utt_tok][{}][{}]".format(i, usr_utt_tok))
+                        print("[sys_utt_tok_label_dict][{}][{}]".format(i, sys_utt_tok_label_dict))
+                        print("[usr_utt_tok_label_dict][{}][{}]".format(i, usr_utt_tok_label_dict))
+                        print("[class_type_dict][{}][{}]".format(i, class_type_dict))
+                    """
                     examples.append(util.InputExample(
                         guid=guid,
                         text_a=sys_utt_tok,

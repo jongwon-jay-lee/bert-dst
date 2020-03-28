@@ -226,4 +226,7 @@ modules.xml
 # BERT Model file
 /bert_model/**
 
+# output dir
+/output/**
+
 # End of https://www.gitignore.io/api/pycharm+all
