@@ -5,11 +5,11 @@ import sys
 import tensorflow as tf
 
 import util
-from  pprint import pprint
+from pprint import pprint
 
 # Directory of bert, cloned from github.com/google-research/bert
-sys.path.append("./bert_src")
-import tokenization
+# sys.path.append("./bert_src")
+from bert_src import tokenization
 
 SEMANTIC_DICT = {
     'center': ['centre', 'downtown', 'central', 'down town', 'middle'],

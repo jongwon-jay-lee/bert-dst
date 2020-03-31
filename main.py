@@ -1,4 +1,11 @@
 """Model definition for BERT-DST. Modified from bert/run_classifier.py"""
+# Directory of bert, cloned from github.com/google-research/bert
+# sys.path.append("./bert")
+from bert_src import modeling
+from bert_src import optimization
+from bert_src import run_classifier
+from bert_src import tokenization
+
 import collections
 import json
 import numpy as np
@@ -13,14 +20,6 @@ import util
 
 flags = tf.flags
 FLAGS = flags.FLAGS
-
-# Directory of bert, cloned from github.com/google-research/bert
-sys.path.append("./bert")
-
-import modeling
-import optimization
-import run_classifier
-import tokenization
 
 ## BERT-DST params
 
@@ -553,7 +552,7 @@ def model_fn_builder(bert_config, slot_list, num_class_labels, init_checkpoint,
                             token_is_pointable))
 
                     total_corretness = class_correctness * (
-                                token_is_pointable * token_correctness + (1 - token_is_pointable))
+                            token_is_pointable * token_correctness + (1 - token_is_pointable))
                     total_accuracy = tf.metrics.mean(
                         tf.reduce_sum(total_corretness) * is_real_example / tf.reduce_sum(is_real_example))
                     loss = tf.metrics.mean(values=per_example_loss, weights=is_real_example)

@@ -14,7 +14,7 @@ mkdir -p $OUTPUT_DIR
 python main.py \
   --task_name=${TASK} \
   --do_train=true \
-  --train_batch_size=16 \
+  --train_batch_size=8 \
   --slot_value_dropout=0.0 \
   --max_seq_length=180 \
   --data_dir=$DATA_DIR \
